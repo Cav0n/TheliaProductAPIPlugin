@@ -1,4 +1,4 @@
-# Product API
+# Thelia Product API plugin
 
 A WordPress plugin to add a shortcode that permit to get product from thelia based website with only the product's reference. 
 
