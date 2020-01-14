@@ -11,6 +11,8 @@
 // SHORTCODE CALLBACK FUNCTION
 function thelia_get_product($atts) {
 	$api_url = get_option("thelia_api_url"); // Get API URL in plugin's option
+	$lang = get_option("thelia_api_lang");
+	if (null === $lang) $lang = 'fr_FR';
 
 	if(filter_var($api_url, FILTER_VALIDATE_URL)){ // Check if API URL is a real URL
 		$product_ref = $atts['ref']; // Get product reference from url attributes
@@ -28,8 +30,8 @@ function thelia_get_product($atts) {
 		$productI18ns = $data['ProductI18ns'];
 		$productSaleElements = $data['ProductSaleElements'];
 
-		$title = $productI18ns['fr_FR']['Title'];
-		$description = $productI18ns['fr_FR']['Description'];
+		$title = $productI18ns[$lang]['Title'];
+		$description = $productI18ns[$lang]['Description'];
 
 
 		// ****** HTML GENERATION ******
