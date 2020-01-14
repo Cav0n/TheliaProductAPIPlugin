@@ -3,11 +3,12 @@
 * Plugin Name: Thelia Product API
 * Plugin URI: https://github.com/Cav0n/ProductAPI
 * Description: Show products informations from your Thelia directly on your WordPress blog
-* Version: 0.1
+* Version: 0.2.0
 * Author: Open Studio
 * Author URI: https://www.openstudio.fr/
 **/
 
+// SHORTCODE CALLBACK FUNCTION
 function thelia_get_product($atts) {
 	$api_url = get_option("thelia_api_url"); // Get API URL in plugin's option
 
@@ -66,20 +67,28 @@ function thelia_get_product($atts) {
 
 add_shortcode('thelia-product', 'thelia_get_product');
 
+// PLUGIN SETTINGS
 function thelia_register_settings() {
 	add_option( 'thelia_api_url', '');
 	register_setting( 'thelia_options_group', 'thelia_api_url', 'myplugin_callback' );
 
 	add_option( 'thelia_api_key', '');
 	register_setting( 'thelia_options_group', 'thelia_api_key', 'myplugin_callback' );
+
+	add_option( 'thelia_api_lang', 'fr_FR');
+	register_setting( 'thelia_options_group', 'thelia_api_lang', 'myplugin_callback' );
 }
+
 add_action( 'admin_init', 'thelia_register_settings' );
 
+// PLUGIN SETTINGS LINK
 function thelia_register_options_page() {
 	add_options_page('Paramètres Thelia', 'Thelia Product API', 'manage_options', 'thelia', 'thelia_options_page');
   }
+
 add_action('admin_menu', 'thelia_register_options_page');
 
+// PLUGIN SETTINGS PAGE
 function thelia_options_page()
 {
 	?>
@@ -103,6 +112,16 @@ function thelia_options_page()
 			<tr valign="top">
 				<th scope="row"><label for="thelia_api_key">Clé</label></th>
 				<td><input type="text" id="thelia_api_key" name="thelia_api_key" value="<?php echo get_option('thelia_api_key'); ?>" class="regular-text" /></td>
+			</tr>
+			</table>
+
+			<h3>Langue de l'API</h3>
+			<p>Indiquez la langue de l'API (cela modifiera la langue du titre des produits par exemple).</p>
+			<p>Si rien n'est indiqué la langue par défaut sera le français (fr_FR).</p>
+			<table class='form-table'>
+			<tr valign="top">
+				<th scope="row"><label for="thelia_api_lang">Code de la langue</label></th>
+				<td><input type="text" id="thelia_api_lang" name="thelia_api_lang" value="<?php echo get_option('thelia_api_lang'); ?>" class="regular-text" /></td>
 			</tr>
 			</table>
 			<?php  submit_button(); ?>
