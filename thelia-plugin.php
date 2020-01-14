@@ -9,28 +9,21 @@
 **/
 
 function thelia_get_product($atts) {
-
 	$api_url = get_option("thelia_api_url");
 
 	if(filter_var($api_url, FILTER_VALIDATE_URL)){
 		$product_ref = $atts['ref'];
+	
+		// ****** TEST ********
 
-		// HACK TO GET ADMIN ACCESS WITH THE COOKIE
-		$opts = [
-			"http" => [
-				"method" => "GET",
-				"header" => "Accept-language: en\r\n" .
-					"Cookie: PHPSESSID=eeu80i8j37iu0uv7bvevpsl5j4\r\n"
-			]
-		];
-		// ----------------------------------------
-	
-		$context = stream_context_create($opts);
-	
-		$json = file_get_contents($api_url . $product_ref, false, $context);
-	
-		$product = json_decode($json)->product;
-	
+		require('vendor/autoload.php');
+		$client = new Thelia\Api\Client\Client("F696D28F1B0334423815575A4", "196897755CA0F58E918BC7C270B631CC5192F3374614BC7A", "http://classic-ride/module/productAPI/search/");
+		list($status, $data) = $client->doGet($product_ref, 1);
+
+		// ********************
+
+		$product = apiCall($api_url, $product_ref);
+
 		$html = '<h2>' . $product->title . '</h2>';
 		$html .= '<p>'. $product->description .'</p>';
 		foreach($product->declinaisons as $decli){
@@ -49,7 +42,6 @@ function thelia_get_product($atts) {
 }
 
 add_shortcode('thelia-product', 'thelia_get_product');
-
 
 function thelia_register_settings() {
 	add_option( 'thelia_api_url', '');
@@ -95,5 +87,27 @@ function thelia_options_page()
 	</div>
 	<?php
 }
+
+function apiCall($api_url, $ref)
+{
+	// HACK TO GET ADMIN ACCESS WITH THE COOKIE
+	$opts = [
+		"http" => [
+			"method" => "GET",
+			"header" => "Accept-language: en\r\n" .
+				"Cookie: PHPSESSID=eeu80i8j37iu0uv7bvevpsl5j4\r\n"
+		]
+	];
+	// ----------------------------------------
+
+	$context = stream_context_create($opts);
+
+	$json = file_get_contents($api_url . $ref, false, $context);
+
+	$product = json_decode($json)->product;
+
+	return $product;
+}
+
 
 
