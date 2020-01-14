@@ -9,34 +9,57 @@
 **/
 
 function thelia_get_product($atts) {
-	$api_url = get_option("thelia_api_url");
+	$api_url = get_option("thelia_api_url"); // Get API URL in plugin's option
 
-	if(filter_var($api_url, FILTER_VALIDATE_URL)){
-		$product_ref = $atts['ref'];
+	if(filter_var($api_url, FILTER_VALIDATE_URL)){ // Check if API URL is a real URL
+		$product_ref = $atts['ref']; // Get product reference from url attributes
 	
-		// ****** TEST ********
+		// ****** THELIA API CLIENT ******
 
 		require('vendor/autoload.php');
-		$client = new Thelia\Api\Client\Client("F696D28F1B0334423815575A4", "196897755CA0F58E918BC7C270B631CC5192F3374614BC7A", "http://classic-ride/module/productAPI/search/");
-		list($status, $data) = $client->doGet($product_ref, 1);
+		$client = new Thelia\Api\Client\Client("F696D28F1B0334423815575A4", "196897755CA0F58E918BC7C270B631CC5192F3374614BC7A", $api_url, null, null);
+		list($status, $data) = $client->doGet($null, $product_ref);
 
-		// ********************
+		// *******************************
 
-		$product = apiCall($api_url, $product_ref);
 
-		$html = '<h2>' . $product->title . '</h2>';
-		$html .= '<p>'. $product->description .'</p>';
-		foreach($product->declinaisons as $decli){
-			$html .= '<div style="display:flex">';
-			$html .= '<p>'. $decli->title .' - '. $decli->attribute .' : </p>';
-			$html .= '<p>'. number_format($decli->price, 2, ".", " ") .'€</p>';
-			$html .= '</div>';
+		$product = $data['Product'];
+		$productI18ns = $data['ProductI18ns'];
+		$productSaleElements = $data['ProductSaleElements'];
+
+		$title = $productI18ns['fr_FR']['Title'];
+		$description = $productI18ns['fr_FR']['Description'];
+
+
+		// ****** HTML GENERATION ******
+
+		$html = '<h2>' . $title . '</h2>';
+		$html .= '<p>'. $description .'</p>';
+		foreach ($productSaleElements as $pse){
+			$html .= '<p>';
+			
+			if(null !== $pse['Attributes']){
+				foreach ($pse['Attributes'] as $attribute){
+					$html .= $attribute . ' - ';
+				}
+			}
+
+			if($pse['Promo']){
+				$html .= '<del>' . number_format($pse['Prices']['Regular'], 2, '.', ' ') . ' €' . '</del> ';
+				$html .= number_format($pse['Prices']['Promo'], 2, '.', ' ') . ' €';
+			} else {
+				$html .= number_format($pse['Prices']['Regular'], 2, '.', ' ') . ' €';
+			}
+			
+			$html .= '</p>';
 		}
+
+		// *****************************
 	
 		return $html;
 	}
 	else {
-		return "<p style='color:red'>L'URL DE L'API THELIA N'EST PAS VALIDE !</p>";
+		return "<p style='color:red'>L'URL DE L'API THELIA N'EST PAS VALIDE !</p>"; // Showing error message instead of product
 	}
 	
 }
@@ -87,27 +110,5 @@ function thelia_options_page()
 	</div>
 	<?php
 }
-
-function apiCall($api_url, $ref)
-{
-	// HACK TO GET ADMIN ACCESS WITH THE COOKIE
-	$opts = [
-		"http" => [
-			"method" => "GET",
-			"header" => "Accept-language: en\r\n" .
-				"Cookie: PHPSESSID=eeu80i8j37iu0uv7bvevpsl5j4\r\n"
-		]
-	];
-	// ----------------------------------------
-
-	$context = stream_context_create($opts);
-
-	$json = file_get_contents($api_url . $ref, false, $context);
-
-	$product = json_decode($json)->product;
-
-	return $product;
-}
-
 
 
