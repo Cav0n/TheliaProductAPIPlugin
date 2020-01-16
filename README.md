@@ -9,11 +9,11 @@ A WordPress plugin to add a shortcode that permit to get product from thelia bas
 
 ## Usage
 
-Write the shortcode [thelia-product ref={THE_PRODUCT_REFERENCE}], it will show automatically the product in your wordpress blog post.
+Write the shortcode **[thelia-product ref={THE_PRODUCT_REFERENCE}]**, it will show automatically the product in your wordpress blog post.
 
 You can show multiple products by writing mutliple ref separate by a ";".
 
-Exemple : [thelia-product ref=150054CN;238003;156066C]
+*Exemple : [thelia-product ref=150054CN;238003;156066C]*
 
 ### Input arguments
 
