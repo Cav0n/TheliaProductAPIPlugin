@@ -16,6 +16,7 @@ function thelia_get_product($atts)
 	$api_url = get_option("thelia_api_url"); // Get API URL in plugin's options
 	$api_lang = get_option("thelia_api_lang"); // Get API lang code
 	$api_country_tax = get_option("thelia_country_tax"); // Get country alpha 3 iso code for taxes
+	$api_css = get_option("thelia_api_css");
 
 	if (null === $api_lang) $api_lang = 'fr_FR'; // If no lang found in plugin's options, set it to french
 	if (null === $api_country_tax) $api_country_tax = 'FRA';
@@ -40,32 +41,46 @@ function thelia_get_product($atts)
 		$title = $productI18ns[$api_lang]['Title'];
 		$description = $productI18ns[$api_lang]['Description'];
 		$mainImage = $product['Images'][0];
+		$price = number_format($productSaleElements[0]['Prices']['price'], 2, '.', ' ') . ' €';
+		$isInPromo = $productSaleElements[0]['Prices']['promo'];
 
+		if($isInPromo){
+			$originalPrice = number_format($productSaleElements[0]['Prices']['original_price'], 2, '.', ' ') . ' €';
+			$discount = ceil( (($originalPrice - $price) / $originalPrice) * 100 ) . '%';
+		}
 
 		// ****** HTML GENERATION ******
 
-		$html = '<div class="SingleProduct">';
-		$html .= '<h2>' . $title . '</h2>';
-		$html .= '<img src="'. $mainImage['image_url'] .'" style="width:100%;">';
-		$html .= '<p>'. $description .'</p>';
-		foreach ($productSaleElements as $pse){
-			$html .= '<p>';
-			
-			if(null !== $pse['Attributes']){
-				foreach ($pse['Attributes'] as $attribute){
-					$html .= $attribute . ' - ';
-				}
-			}
+		$html = "<style type='text/css'>$api_css</style>";
 
-			if($pse['Promo']){
-				$html .= '<del>' . number_format($pse['Prices']['Regular'], 2, '.', ' ') . ' €' . '</del> ';
-				$html .= number_format($pse['Prices']['Promo'], 2, '.', ' ') . ' €';
-			} else {
-				$html .= number_format($pse['Prices']['Regular'], 2, '.', ' ') . ' €';
-			}
+		$html .= '<article class="SingleProduct">';
+
+		$html .= '<a class="SingleProduct__image" href="#">';
+			$html .= '<img src="'. $mainImage['image_url'] .'" style="width:100%;">';
+		$html .= '</a>';
+
+		$html .= '<div>';
+			$html .= '<div class="SingleProduct__info">';
+				$html .= "<h3 class='SingleProduct__title'><a href='#'><span>$title</span></a></h3>";
+			$html .= '</div>';
+
+			$html .= '<div class="SingleProduct__price">';
+
+				if($isInPromo){
+					$html .= "<span class='price'>$price</span>";
+					$html .= "<span class='old-price'>$originalPrice</span>";
+					$html .= "<span class='discount'>". $discount ."</span>";
+				} else {
+					$html .= "<span class='price'>$price</span>";
+				}
+
+			$html .= '</div>';
 			
-			$html .= '</p>';
-		}
+			$html .= '<div class="SingleProduct__rating">';
+				$html .= '<div class="Rating d-flex">';
+					$html .= '<span class="Rating-text">4/5</span>';
+				$html .= '</div>';
+			$html .= '</div>';
 		$html .= '</div>';
 
 		// *****************************
@@ -96,7 +111,11 @@ function thelia_register_settings()
 	register_setting( 'thelia_options_group', 'thelia_api_lang', 'myplugin_callback' );
 
 	add_option( 'thelia_country_tax', 'FRA');
-	register_setting( 'thelia_options_group', 'thelia_api_lang', 'myplugin_callback' );
+	register_setting( 'thelia_options_group', 'thelia_country_tax', 'myplugin_callback' );
+
+	add_option( 'thelia_api_css', '');
+	register_setting( 'thelia_options_group', 'thelia_api_css', 'myplugin_callback' );
+
 }
 
 add_action( 'admin_init', 'thelia_register_settings' );
@@ -167,6 +186,15 @@ function thelia_options_page()
 				<tr valign="top">
 					<th scope="row"><label for="thelia_country_tax">Code de la langue</label></th>
 					<td><input type="text" id="thelia_country_tax" name="thelia_country_tax" value="<?php echo get_option('thelia_country_tax'); ?>" class="regular-text" /></td>
+				</tr>
+			</table>
+
+			<h3>CSS du plugin</h3>
+			<p>Collez ici le CSS que vous souhaitez appliquer aux produits.</p>
+			<table class='form-table'>
+				<tr valign="top">
+					<th scope="row"><label for="thelia_api_css">CSS</label></th>
+					<td><textarea type="text" id="thelia_api_css" name="thelia_api_css" class="regular-text" ><?php echo get_option('thelia_api_css'); ?></textarea></td>
 				</tr>
 			</table>
 
