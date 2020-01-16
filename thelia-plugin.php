@@ -41,6 +41,7 @@ function thelia_get_product($atts)
 			$productI18ns = $product['ProductI18ns'];
 			$productSaleElements = $product['ProductSaleElements'];
 
+			$url = $product['URL'];
 			$title = $productI18ns[$api_lang]['Title'];
 			$description = $productI18ns[$api_lang]['Description'];
 			$mainImage = $product['Images'][0];
@@ -58,13 +59,13 @@ function thelia_get_product($atts)
 
 			$html .= '<article class="SingleProduct">';
 
-			$html .= '<a class="SingleProduct__image" href="#">';
+			$html .= "<a class='SingleProduct__image' href='$url'>";
 				$html .= '<img src="'. $mainImage['image_url'] .'" style="width:100%;">';
 			$html .= '</a>';
 
 			$html .= '<div>';
 				$html .= '<div class="SingleProduct__info">';
-					$html .= "<h3 class='SingleProduct__title'><a href='#'><span>$title</span></a></h3>";
+					$html .= "<h3 class='SingleProduct__title'><a href='$url'><span>$title</span></a></h3>";
 				$html .= '</div>';
 
 				$html .= '<div class="SingleProduct__price">';
