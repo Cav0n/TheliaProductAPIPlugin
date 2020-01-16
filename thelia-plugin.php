@@ -22,69 +22,77 @@ function thelia_get_product($atts)
 	if (null === $api_country_tax) $api_country_tax = 'FRA';
 
 	if(filter_var($api_url, FILTER_VALIDATE_URL)){ // Check if API URL is a real URL
-		$product_ref = $atts['ref']; // Get product reference from url attributes
+		$product_refs = explode(';',$atts['ref']); // Get product reference from url attributes
 
-		// ****** THELIA API CLIENT ******
+		$html = '<div style="display:flex">';
 
-		require('vendor/autoload.php'); // Necessary to load Thelia API Client
-		$client = new Thelia\Api\Client\Client($api_token, $api_key, $api_url, null, null); // Calling API with api_token, api_key and api_url
-		list($status, $data) = $client->doGet($null, $product_ref . '/' . $api_country_tax); // Do GET method on API with the product ref
+		foreach($product_refs as $product_ref){
+			// ****** THELIA API CLIENT ******
 
-		// *******************************
+			require('vendor/autoload.php'); // Necessary to load Thelia API Client
+			$client = new Thelia\Api\Client\Client($api_token, $api_key, $api_url, null, null); // Calling API with api_token, api_key and api_url
+			list($status, $data) = $client->doGet(null, $product_ref . '/' . $api_country_tax); // Do GET method on API with the product ref
+
+			// *******************************
 
 
-		// See the JSON result to understand the data below
-		$product = $data['Product'];
-		$productI18ns = $product['ProductI18ns'];
-		$productSaleElements = $product['ProductSaleElements'];
+			// See the JSON result to understand the data below
+			$product = $data['Product'];
+			$productI18ns = $product['ProductI18ns'];
+			$productSaleElements = $product['ProductSaleElements'];
 
-		$title = $productI18ns[$api_lang]['Title'];
-		$description = $productI18ns[$api_lang]['Description'];
-		$mainImage = $product['Images'][0];
-		$price = number_format($productSaleElements[0]['Prices']['price'], 2, '.', ' ') . ' €';
-		$isInPromo = $productSaleElements[0]['Prices']['promo'];
+			$title = $productI18ns[$api_lang]['Title'];
+			$description = $productI18ns[$api_lang]['Description'];
+			$mainImage = $product['Images'][0];
+			$price = number_format($productSaleElements[0]['Prices']['price'], 2, '.', ' ');
+			$isInPromo = $productSaleElements[0]['Prices']['promo'];
 
-		if($isInPromo){
-			$originalPrice = number_format($productSaleElements[0]['Prices']['original_price'], 2, '.', ' ') . ' €';
-			$discount = ceil( (($originalPrice - $price) / $originalPrice) * 100 ) . '%';
-		}
+			if($isInPromo){
+				$originalPrice = number_format($productSaleElements[0]['Prices']['original_price'], 2, '.', ' ');
+				$discount = ceil( (($originalPrice - $price) / $originalPrice) * 100 );
+			}
 
-		// ****** HTML GENERATION ******
+			// ****** HTML GENERATION ******
 
-		$html = "<style type='text/css'>$api_css</style>";
+			$html .= "<style type='text/css'>$api_css</style>";
 
-		$html .= '<article class="SingleProduct">';
+			$html .= '<article class="SingleProduct">';
 
-		$html .= '<a class="SingleProduct__image" href="#">';
-			$html .= '<img src="'. $mainImage['image_url'] .'" style="width:100%;">';
-		$html .= '</a>';
+			$html .= '<a class="SingleProduct__image" href="#">';
+				$html .= '<img src="'. $mainImage['image_url'] .'" style="width:100%;">';
+			$html .= '</a>';
 
-		$html .= '<div>';
-			$html .= '<div class="SingleProduct__info">';
-				$html .= "<h3 class='SingleProduct__title'><a href='#'><span>$title</span></a></h3>";
-			$html .= '</div>';
+			$html .= '<div>';
+				$html .= '<div class="SingleProduct__info">';
+					$html .= "<h3 class='SingleProduct__title'><a href='#'><span>$title</span></a></h3>";
+				$html .= '</div>';
 
-			$html .= '<div class="SingleProduct__price">';
+				$html .= '<div class="SingleProduct__price">';
 
-				if($isInPromo){
-					$html .= "<span class='price'>$price</span>";
-					$html .= "<span class='old-price'>$originalPrice</span>";
-					$html .= "<span class='discount'>". $discount ."</span>";
-				} else {
-					$html .= "<span class='price'>$price</span>";
-				}
+					if($isInPromo){
+						$html .= "<span class='price'>$price €</span>";
+						$html .= "<span class='old-price'>$originalPrice €</span>";
+						$html .= "<span class='discount'>". $discount ." %</span>";
+					} else {
+						$html .= "<span class='price'>$price</span>";
+					}
 
-			$html .= '</div>';
-			
-			$html .= '<div class="SingleProduct__rating">';
-				$html .= '<div class="Rating d-flex">';
-					$html .= '<span class="Rating-text">4/5</span>';
+				$html .= '</div>';
+				
+				$html .= '<div class="SingleProduct__rating">';
+					$html .= '<div class="Rating d-flex">';
+						$html .= '<span class="Rating-text">4/5</span>';
+					$html .= '</div>';
 				$html .= '</div>';
 			$html .= '</div>';
-		$html .= '</div>';
 
-		// *****************************
-	
+			$html .= '</article>';
+
+			// *****************************
+		
+			
+		}
+		$html .= '</div>';
 		return $html;
 	}
 	else {
