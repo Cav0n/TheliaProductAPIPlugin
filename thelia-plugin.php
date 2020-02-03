@@ -80,12 +80,6 @@ function thelia_get_product($atts)
 					}
 
 				$html .= '</div>';
-				
-				$html .= '<div class="SingleProduct__rating">';
-					$html .= '<div class="Rating d-flex">';
-						$html .= '<span class="Rating-text">4/5</span>';
-					$html .= '</div>';
-				$html .= '</div>';
 			$html .= '</div>';
 
 			$html .= '</article>';
