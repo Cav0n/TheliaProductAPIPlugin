@@ -26,7 +26,7 @@ function thelia_get_product($atts)
 	if(filter_var($api_url, FILTER_VALIDATE_URL)){ // Check if API URL is a real URL
 		$product_refs = explode(';',$atts['ref']); // Get product reference from url attributes
 
-		$html = '<div class="productApiContainer row justify-content-center justify-content-md-start">';
+		$html = '<div class="productApiContainer row justify-content-center justify-content-md-start" style="max-width:100% !important;">';
 		$html .= "<style type='text/css'>$api_css</style>";
 
 		foreach($product_refs as $product_ref){
