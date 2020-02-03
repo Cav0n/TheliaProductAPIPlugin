@@ -11,6 +11,8 @@
 // SHORTCODE CALLBACK FUNCTION
 function thelia_get_product($atts) 
 {
+	prefix_enqueue();
+
 	$api_token = get_option("thelia_api_token"); // Get API token in plugin's options
 	$api_key = get_option("thelia_api_key"); // Get API key in plugin's options
 	$api_url = get_option("thelia_api_url"); // Get API URL in plugin's options
@@ -24,7 +26,8 @@ function thelia_get_product($atts)
 	if(filter_var($api_url, FILTER_VALIDATE_URL)){ // Check if API URL is a real URL
 		$product_refs = explode(';',$atts['ref']); // Get product reference from url attributes
 
-		$html = '<div style="display:flex">';
+		$html = '<div class="productApiContainer row justify-content-center justify-content-md-start">';
+		$html .= "<style type='text/css'>$api_css</style>";
 
 		foreach($product_refs as $product_ref){
 			// ****** THELIA API CLIENT ******
@@ -41,6 +44,7 @@ function thelia_get_product($atts)
 			$productI18ns = $product['ProductI18ns'];
 			$productSaleElements = $product['ProductSaleElements'];
 
+			$url = $product['URL'];
 			$title = $productI18ns[$api_lang]['Title'];
 			$description = $productI18ns[$api_lang]['Description'];
 			$mainImage = $product['Images'][0];
@@ -54,17 +58,15 @@ function thelia_get_product($atts)
 
 			// ****** HTML GENERATION ******
 
-			$html .= "<style type='text/css'>$api_css</style>";
+			$html .= '<article class="SingleProduct col-6 col-md-4 col-lg-3 p-0">';
 
-			$html .= '<article class="SingleProduct">';
-
-			$html .= '<a class="SingleProduct__image" href="#">';
+			$html .= "<a class='SingleProduct__image' href='$url'>";
 				$html .= '<img src="'. $mainImage['image_url'] .'" style="width:100%;">';
 			$html .= '</a>';
 
 			$html .= '<div>';
 				$html .= '<div class="SingleProduct__info">';
-					$html .= "<h3 class='SingleProduct__title'><a href='#'><span>$title</span></a></h3>";
+					$html .= "<h3 class='SingleProduct__title'><a href='$url'><span>$title</span></a></h3>";
 				$html .= '</div>';
 
 				$html .= '<div class="SingleProduct__price">';
@@ -213,4 +215,9 @@ function thelia_options_page()
 	<?php
 }
 
-
+function prefix_enqueue() 
+{
+    // CSS
+    wp_register_style('prefix_bootstrap', plugins_url('css/bootstrap.css',__FILE__ ));
+    wp_enqueue_style('prefix_bootstrap');
+}
