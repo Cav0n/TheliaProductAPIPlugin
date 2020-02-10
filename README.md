@@ -6,8 +6,9 @@ A WordPress plugin to add a shortcode that permit to get product from thelia bas
 
 * Copy the plugin into ```<your_wordpress_root>/wp_content/plugins/``` directory.
 * Activate it in your WordPress administration panel
-
+* Add your API configuration in the plugin settings panel :
 ![Demo](https://raw.githubusercontent.com/Cav0n/TheliaProductAPIPlugin/master/plugin_parameters.png "Paramètres du plugin WordPresss")
+* Use the shortcode *thelia-product* in your posts : 
 ![Demo](https://raw.githubusercontent.com/Cav0n/TheliaProductAPIPlugin/master/plugin_usage.png "Exemple d'usage du plugin")
 
 ## Usage
