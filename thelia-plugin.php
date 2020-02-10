@@ -13,7 +13,6 @@ function thelia_get_product($atts)
 {
 	prefix_enqueue();
 
-	$api_token = get_option("thelia_api_token"); // Get API token in plugin's options
 	$api_key = get_option("thelia_api_key"); // Get API key in plugin's options
 	$api_url = get_option("thelia_api_url"); // Get API URL in plugin's options
 	$api_lang = get_option("thelia_api_lang"); // Get API lang code
@@ -123,9 +122,6 @@ add_shortcode('thelia-product', 'thelia_get_product');
 // PLUGIN SETTINGS
 function thelia_register_settings() 
 {
-	add_option( 'thelia_api_token', '');
-	register_setting( 'thelia_options_group', 'thelia_api_token', 'myplugin_callback' );
-
 	add_option( 'thelia_api_key', '');
 	register_setting( 'thelia_options_group', 'thelia_api_key', 'myplugin_callback' );
 
@@ -163,20 +159,10 @@ function thelia_options_page()
 		<form method="post" action="options.php">
 			<?php settings_fields( 'thelia_options_group' ); ?>
 
-			<h3>Token de l'API</h3>
-			<p>Pour trouver le token de l'API, dans votre panneau d'administration Thelia : Configuration -> Paramètres Systèmes -> Configuration de L'API -> Clé d'API</p>
-			<p>Exemple de token d'API : <strong>F696D28F1B0334423815575A4</strong></p>
-			<table class='form-table'>
-				<tr valign="top">
-					<th scope="row"><label for="thelia_api_token">Token</label></th>
-					<td><input type="text" id="thelia_api_token" name="thelia_api_token" value="<?php echo get_option('thelia_api_token'); ?>" class="regular-text" /></td>
-				</tr>
-			</table>
-
 			<h3>Clé de l'API</h3>
 			<p>Pour trouver la clé de l'API, dans votre panneau d'administration Thelia : Configuration -> Paramètres Systèmes -> Configuration de L'API -> télécharger</p>
 			<p>Ouvrez le fichier téléchargé avec un éditeur de texte. La chaine de caractère est votre clé d'API.</p>
-			<p>Exemple de clé d'API : <strong>196897755CA0F58E918BC7C270B631CC5192F3374614BC7A</strong></p>
+			<p>Exemple de clé d'API : <strong>ExRtVQjUCCBApuN4s4fPEQ6i5yggYvm2</strong></p>
 			<table class='form-table'>
 				<tr valign="top">
 					<th scope="row"><label for="thelia_api_key">Clé</label></th>
@@ -185,7 +171,7 @@ function thelia_options_page()
 			</table>
 			
 			<h3>URL de l'API</h3>
-			<p>Normalement il s'agit de <strong>http://[URL DE VOTRE SITE]/api/product/ref</strong>.</p>
+			<p>Normalement il s'agit de <strong>http://[URL DE VOTRE SITE]/api/product</strong>.</p>
 			<p>[URL DE VOTRE SITE] est l'URL de votre Thelia.</p>
 			<table class='form-table'>
 				<tr valign="top">
@@ -219,7 +205,7 @@ function thelia_options_page()
 			<table class='form-table'>
 				<tr valign="top">
 					<th scope="row"><label for="thelia_api_css">CSS</label></th>
-					<td><textarea type="text" id="thelia_api_css" name="thelia_api_css" class="regular-text" ><?php echo get_option('thelia_api_css'); ?></textarea></td>
+					<td><textarea type="text" id="thelia_api_css" name="thelia_api_css" class="regular-text" rows="20"><?php echo get_option('thelia_api_css'); ?></textarea></td>
 				</tr>
 			</table>
 
