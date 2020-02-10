@@ -30,14 +30,18 @@ function thelia_get_product($atts)
 
 		foreach($product_refs as $product_ref){
 			// ****** API CLIENT ******
-			$hash = sha1($product_ref . $api_key);
+			$hash = sha1($product_ref . $api_lang . $api_country_tax . $api_key);
 
 			$url = $api_url . '?ref=' . $product_ref . '&hash=' . $hash;
+			if(null !== $api_lang) $url .= '&lang=' . $api_lang;
+			if(null !== $api_country_tax) $url .= '&country=' . $api_country_tax;
 
-			list($data, $httpcode) = api_client($url);
-
+			try{
+				list($data, $httpcode) = api_client($url);
+			} catch(\Exception $e){
+				return "<p class='text-danger'>Aucun produit avec la référence <b>$product_ref</b>.</p>";
+			}
 			// *******************************
-
 
 			// See the JSON result to understand the data below
 			$product = $data['Product'];
@@ -114,7 +118,7 @@ function api_client($url)
 
 	return array($response, $httpcode);
 
-	$data = json_decode($response, true);
+	$data = $response;
 }
 
 add_shortcode('thelia-product', 'thelia_get_product');
