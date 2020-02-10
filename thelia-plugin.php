@@ -30,11 +30,12 @@ function thelia_get_product($atts)
 		$html .= "<style type='text/css'>$api_css</style>";
 
 		foreach($product_refs as $product_ref){
-			// ****** THELIA API CLIENT ******
+			// ****** API CLIENT ******
+			$hash = sha1($product_ref . $api_key);
 
-			require('vendor/autoload.php'); // Necessary to load Thelia API Client
-			$client = new Thelia\Api\Client\Client($api_token, $api_key, $api_url, null, null); // Calling API with api_token, api_key and api_url
-			list($status, $data) = $client->doGet(null, $product_ref . '/' . $api_country_tax); // Do GET method on API with the product ref
+			$url = $api_url . '?ref=' . $product_ref . '&hash=' . $hash;
+
+			list($data, $httpcode) = api_client($url);
 
 			// *******************************
 
@@ -43,16 +44,17 @@ function thelia_get_product($atts)
 			$product = $data['Product'];
 			$productI18ns = $product['ProductI18ns'];
 			$productSaleElements = $product['ProductSaleElements'];
+			$firstPseKey = array_keys($productSaleElements)[0];
 
 			$url = $product['URL'];
 			$title = $productI18ns[$api_lang]['Title'];
 			$description = $productI18ns[$api_lang]['Description'];
 			$mainImage = $product['Images'][0];
-			$price = number_format($productSaleElements[0]['Prices']['price'], 2, '.', ' ');
-			$isInPromo = $productSaleElements[0]['Prices']['promo'];
+			$price = number_format($productSaleElements[$firstPseKey]['Prices']['price'], 2, '.', ' ');
+			$isInPromo = $productSaleElements[$firstPseKey]['Prices']['promo'];
 
 			if($isInPromo){
-				$originalPrice = number_format($productSaleElements[0]['Prices']['original_price'], 2, '.', ' ');
+				$originalPrice = number_format($productSaleElements[$firstPseKey]['Prices']['original_price'], 2, '.', ' ');
 				$discount = ceil( (($originalPrice - $price) / $originalPrice) * 100 );
 			}
 
@@ -95,6 +97,25 @@ function thelia_get_product($atts)
 		return "<p style='color:red'>L'URL DE L'API THELIA N'EST PAS VALIDE !</p>"; // Showing error message instead of product
 	}
 	
+}
+
+function api_client($url)
+{
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-type: application/json']);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+	$response = json_decode(curl_exec($ch), true);
+	$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+	if ($httpcode >= 400) {
+		throw new \Exception($response, $httpcode);
+	}
+
+	return array($response, $httpcode);
+
+	$data = json_decode($response, true);
 }
 
 add_shortcode('thelia-product', 'thelia_get_product');
