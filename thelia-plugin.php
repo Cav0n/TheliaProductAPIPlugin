@@ -39,7 +39,7 @@ function thelia_get_product($atts)
 			try{
 				list($data, $httpcode) = api_client($url);
 			} catch(\Exception $e){
-				return "<p class='text-danger'>Aucun produit avec la référence <b>$product_ref</b>.</p>";
+				return "<p class='text-danger'>Aucun produit avec la référence : <b>$product_ref</b> !!</p>";
 			}
 			// *******************************
 
@@ -104,21 +104,28 @@ function thelia_get_product($atts)
 
 function api_client($url)
 {
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-type: application/json']);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	$wp_request_headers = array(
+		'Authorization' => 'Basic ' . base64_encode( 'admin:admin1234!!' )
+	);
+	
+	$wp_request_url = $url;
+	
+	$wp_get_product_response = wp_remote_request(
+		$wp_request_url,
+		array(
+			'method'    => 'GET',
+			'headers'   => $wp_request_headers
+		)
+	);
 
-	$response = json_decode(curl_exec($ch), true);
-	$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	$json = wp_remote_retrieve_body($wp_get_product_response);
+	$httpcode = wp_remote_retrieve_response_code($wp_get_product_response);
 
 	if ($httpcode >= 400) {
-		throw new \Exception($response, $httpcode);
+		throw new \Exception("Impossible de trouver le produit.");
 	}
 
-	return array($response, $httpcode);
-
-	$data = $response;
+	return array(json_decode($json, true), $httpcode);
 }
 
 add_shortcode('thelia-product', 'thelia_get_product');
