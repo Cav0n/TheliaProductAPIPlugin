@@ -11,7 +11,7 @@
 // SHORTCODE CALLBACK FUNCTION
 function thelia_get_product($atts) 
 {
-	prefix_enqueue();
+	thelia_prefix_enqueue();
 
 	$api_key = get_option("thelia_api_key"); // Get API key in plugin's options
 	$api_url = get_option("thelia_api_url"); // Get API URL in plugin's options
@@ -37,7 +37,7 @@ function thelia_get_product($atts)
 			if(null !== $api_country_tax) $url .= '&country=' . $api_country_tax;
 
 			try{
-				list($data, $httpcode) = api_client($url);
+				list($data, $httpcode) = thelia_api_client($url);
 			} catch(\Exception $e){
 				return "<p class='text-danger'>Aucun produit avec la référence : <b>$product_ref</b> !!</p>";
 			}
@@ -102,7 +102,7 @@ function thelia_get_product($atts)
 	
 }
 
-function api_client($url)
+function thelia_api_client($url)
 {
 	$wp_request_headers = array(
 		'Authorization' => 'Basic ' . base64_encode( 'admin:admin1234!!' )
@@ -227,7 +227,7 @@ function thelia_options_page()
 	<?php
 }
 
-function prefix_enqueue() 
+function thelia_prefix_enqueue() 
 {
     // CSS
     wp_register_style('prefix_bootstrap', plugins_url('css/bootstrap.css',__FILE__ ));
