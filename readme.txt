@@ -4,7 +4,7 @@ Tags: thelia, ecommerce
 Requires at least: 5.1
 Tested up to: 5.4
 Requires PHP: 7.2
-Stable tag: 1.0
+Stable tag: 1.0.1
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -14,14 +14,10 @@ Add a link between your Thelia shop and your Wordpress blog
  
 This plugin is designed to add products from your Thelia shop on blog posts in you WordPress blog.
 
-It's really simple !
+Add your products on your WordPress blog to add more visibility to your shop !
  
 == Installation ==
- 
-This section describes how to install the plugin and get it working.
- 
-e.g.
- 
+
 1. Upload `thelia-plugin.php` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Add your API key, URL, and CSS in Settings > Thelia Product API
@@ -32,8 +28,13 @@ product you want to add
  
 = Where do I find my API key / URL ? =
  
-In your Thelia dashboard > Modules > Modules classic > WordPressLink configuration > API Key / URL
- 
+In your Thelia dashboard > Modules > Modules classic > Product API > Configuration
+
+= Hum... products doesn't look like products on my Thelia shop... =
+
+This means that you have a CSS issue in the plugin. Be sure to copy and paste the CSS style of 'SingleProduct' from 
+your Thelia shop to the Thelia WordPress plugin settings (Settings > Thelia Product API).
+
 == Screenshots ==
  
 1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
@@ -43,6 +44,9 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 2. This is the second screen shot
  
 == Changelog ==
- 
-= 1.0 =
+
+= 1.0.1 =
+* Updated plugin documentation (readme.txt)
+
+= 1.0.0 =
 * First Version of the plugins

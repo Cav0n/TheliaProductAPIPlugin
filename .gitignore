@@ -26,3 +26,8 @@ Temporary Items
 .apdisk
 
 vendor
+trunk
+tags
+branches
+assets
+.svn
