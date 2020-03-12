@@ -171,8 +171,7 @@ function thelia_options_page()
 			<?php settings_fields( 'thelia_options_group' ); ?>
 
 			<h3>Clé de l'API</h3>
-			<p>Pour trouver la clé de l'API, dans votre panneau d'administration Thelia : Configuration -> Paramètres Systèmes -> Configuration de L'API -> télécharger</p>
-			<p>Ouvrez le fichier téléchargé avec un éditeur de texte. La chaine de caractère est votre clé d'API.</p>
+			<p>Pour trouver la clé de l'API, dans votre panneau d'administration Thelia : Modules -> ProductAPI -> Paramètres du modules (icone de clé à molette)</p>
 			<p>Exemple de clé d'API : <strong>ExRtVQjUCCBApuN4s4fPEQ6i5yggYvm2</strong></p>
 			<table class='form-table'>
 				<tr valign="top">
@@ -182,6 +181,7 @@ function thelia_options_page()
 			</table>
 			
 			<h3>URL de l'API</h3>
+			<p>Vous pouvez trouver l'URL de l'API dans votre panneau d'administration Thelia : Modules -> ProductAPI -> Paramètres du module (icone de clé à molette)</p>
 			<p>Normalement il s'agit de <strong>http://[URL DE VOTRE SITE]/api/product</strong>.</p>
 			<p>[URL DE VOTRE SITE] est l'URL de votre Thelia.</p>
 			<table class='form-table'>
