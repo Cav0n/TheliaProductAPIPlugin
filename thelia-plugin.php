@@ -3,7 +3,7 @@
 * Plugin Name: Thelia Product API
 * Plugin URI: https://github.com/Cav0n/ProductAPI
 * Description: Show products informations from your Thelia directly on your WordPress blog
-* Version: 1.0.1
+* Version: 1.0.2
 * Author: Open Studio
 * Author URI: https://www.openstudio.fr/
 **/
