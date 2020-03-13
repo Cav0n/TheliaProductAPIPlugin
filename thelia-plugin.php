@@ -52,7 +52,19 @@ function thelia_get_product($atts)
 			$url = $product['URL'];
 			$title = $productI18ns[$api_lang]['Title'];
 			$description = $productI18ns[$api_lang]['Description'];
-			$mainImage = $product['Images'][0];
+
+			$mainImage = null;
+			foreach ($product['Images'] as $image) {
+                if (null == $mainImage) {
+			        $mainImage = $image;
+			        continue;
+                }
+
+			    if ($image['position'] < $mainImage['position']) {
+			        $mainImage = $image;
+                }
+            }
+
 			$price = number_format($productSaleElements[$firstPseKey]['Prices']['price'], 2, '.', ' ');
 			$isInPromo = $productSaleElements[$firstPseKey]['Prices']['promo'];
 
