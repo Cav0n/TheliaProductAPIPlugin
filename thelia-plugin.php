@@ -93,7 +93,7 @@ function thelia_get_product($atts)
 						$html .= "<span class='old-price'>$originalPrice €</span>";
 						$html .= "<span class='discount'>". $discount ." %</span>";
 					} else {
-						$html .= "<span class='price'>$price</span>";
+						$html .= "<span class='price'>$price €</span>";
 					}
 
 				$html .= '</div>';
