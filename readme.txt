@@ -4,7 +4,7 @@ Tags: thelia, ecommerce
 Requires at least: 5.1
 Tested up to: 5.4
 Requires PHP: 7.0
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -44,6 +44,9 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 2. This is the second screen shot
  
 == Changelog ==
+
+= 1.0.4 =
+* Fixed currency of default price not showing
 
 = 1.0.3 =
 * Fixed main image to show REAL main image
