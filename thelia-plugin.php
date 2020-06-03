@@ -3,7 +3,7 @@
 * Plugin Name: Thelia Product API
 * Plugin URI: https://github.com/Cav0n/ProductAPI
 * Description: Show products informations from your Thelia directly on your WordPress blog
-* Version: 1.0.3
+* Version: 1.0.5
 * Author: Open Studio
 * Author URI: https://www.openstudio.fr/
 **/
@@ -18,12 +18,17 @@ function thelia_get_product($atts)
 	$api_lang = get_option("thelia_api_lang"); // Get API lang code
 	$api_country_tax = get_option("thelia_country_tax"); // Get country alpha 3 iso code for taxes
 	$api_css = get_option("thelia_api_css");
+	$openInNewTab = null;
 
 	if (null === $api_lang) $api_lang = 'fr_FR'; // If no lang found in plugin's options, set it to french
 	if (null === $api_country_tax) $api_country_tax = 'FRA';
 
 	if(filter_var($api_url, FILTER_VALIDATE_URL)){ // Check if API URL is a real URL
 		$product_refs = explode(';',$atts['ref']); // Get product reference from url attributes
+
+		if (isset($atts['new-tab']) && 'true' === $atts['new-tab']) { // If 'new-tab' attribute is set in shortcode, open links to product page in new tab.
+			$openInNewTab = 'target="_blank" rel="noopener noreferrer"';
+		}
 
 		$html = '<div class="productApiContainer row justify-content-center justify-content-md-start" style="max-width:100% !important;">';
 		$html .= "<style type='text/css'>$api_css</style>";
@@ -77,13 +82,13 @@ function thelia_get_product($atts)
 
 			$html .= '<article class="SingleProduct col-6 col-md-4 col-lg-3 p-0">';
 
-			$html .= "<a class='SingleProduct__image' href='$url'>";
+			$html .= "<a class='SingleProduct__image' href='$url' $openInNewTab>";
 				$html .= '<img src="'. $mainImage['image_url'] .'" style="width:100%;">';
 			$html .= '</a>';
 
 			$html .= '<div>';
 				$html .= '<div class="SingleProduct__info">';
-					$html .= "<h3 class='SingleProduct__title'><a href='$url'><span>$title</span></a></h3>";
+					$html .= "<h3 class='SingleProduct__title'><a href='$url' $openInNewTab><span>$title</span></a></h3>";
 				$html .= '</div>';
 
 				$html .= '<div class="SingleProduct__price">';
