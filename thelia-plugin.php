@@ -3,7 +3,7 @@
 * Plugin Name: Thelia Product API
 * Plugin URI: https://github.com/Cav0n/ProductAPI
 * Description: Show products informations from your Thelia directly on your WordPress blog
-* Version: 1.0.5
+* Version: 1.0.6
 * Author: Open Studio
 * Author URI: https://www.openstudio.fr/
 **/
@@ -18,7 +18,7 @@ function thelia_get_product($atts)
 	$api_lang = get_option("thelia_api_lang"); // Get API lang code
 	$api_country_tax = get_option("thelia_country_tax"); // Get country alpha 3 iso code for taxes
 	$api_css = get_option("thelia_api_css");
-	$openInNewTab = null;
+	$openInNewTab = 'target="_blank" rel="noopener noreferrer"';
 
 	if (null === $api_lang) $api_lang = 'fr_FR'; // If no lang found in plugin's options, set it to french
 	if (null === $api_country_tax) $api_country_tax = 'FRA';
@@ -26,8 +26,8 @@ function thelia_get_product($atts)
 	if(filter_var($api_url, FILTER_VALIDATE_URL)){ // Check if API URL is a real URL
 		$product_refs = explode(';',$atts['ref']); // Get product reference from url attributes
 
-		if (isset($atts['new-tab']) && 'true' === $atts['new-tab']) { // If 'new-tab' attribute is set in shortcode, open links to product page in new tab.
-			$openInNewTab = 'target="_blank" rel="noopener noreferrer"';
+		if (isset($atts['new-tab']) && 'false' === $atts['new-tab']) { // If 'new-tab' attribute is set in shortcode and false, links will open in current tab
+			$openInNewTab = null;
 		}
 
 		$html = '<div class="productApiContainer row justify-content-center justify-content-md-start" style="max-width:100% !important;">';
