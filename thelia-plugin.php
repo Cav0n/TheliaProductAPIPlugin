@@ -3,7 +3,7 @@
 * Plugin Name: Thelia Product API
 * Plugin URI: https://github.com/Cav0n/ProductAPI
 * Description: Show products informations from your Thelia directly on your WordPress blog
-* Version: 1.0.6
+* Version: 1.0.7
 * Author: Open Studio
 * Author URI: https://www.openstudio.fr/
 **/
@@ -83,7 +83,7 @@ function thelia_get_product($atts)
 			$html .= '<article class="SingleProduct col-6 col-md-4 col-lg-3 p-0">';
 
 			$html .= "<a class='SingleProduct__image' href='$url' $openInNewTab>";
-				$html .= '<img src="'. $mainImage['image_url'] .'" style="width:100%;">';
+				$html .= '<img src="'. $mainImage['originale_image_url'] .'" style="width:100%;">';
 			$html .= '</a>';
 
 			$html .= '<div>';
