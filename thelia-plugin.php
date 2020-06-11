@@ -3,7 +3,7 @@
 * Plugin Name: Thelia Product API
 * Plugin URI: https://github.com/Cav0n/ProductAPI
 * Description: Show products informations from your Thelia directly on your WordPress blog
-* Version: 1.0.7
+* Version: 1.0.8
 * Author: Open Studio
 * Author URI: https://www.openstudio.fr/
 **/
@@ -25,9 +25,14 @@ function thelia_get_product($atts)
 
 	if(filter_var($api_url, FILTER_VALIDATE_URL)){ // Check if API URL is a real URL
 		$product_refs = explode(';',$atts['ref']); // Get product reference from url attributes
+		$imageType = 'image_url';
 
 		if (isset($atts['new-tab']) && 'false' === $atts['new-tab']) { // If 'new-tab' attribute is set in shortcode and false, links will open in current tab
 			$openInNewTab = null;
+		}
+
+		if (isset($atts['original-image']) && 'true' === $atts['original-image']) {
+			$imageType = 'originale_image_url';
 		}
 
 		$html = '<div class="productApiContainer row justify-content-center justify-content-md-start" style="max-width:100% !important;">';
@@ -83,7 +88,7 @@ function thelia_get_product($atts)
 			$html .= '<article class="SingleProduct col-6 col-md-4 col-lg-3 p-0">';
 
 			$html .= "<a class='SingleProduct__image' href='$url' $openInNewTab>";
-				$html .= '<img src="'. $mainImage['originale_image_url'] .'" style="width:100%;">';
+				$html .= '<img src="'. $mainImage[$imageType] .'" style="width:100%;">';
 			$html .= '</a>';
 
 			$html .= '<div>';
